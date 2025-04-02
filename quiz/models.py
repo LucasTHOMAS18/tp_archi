@@ -1,5 +1,5 @@
 from .app import db
-
+from .extensions import db
 
 class Questionnaire(db.Model):
     id = db.Column(db.Integer, primary_key=True)
