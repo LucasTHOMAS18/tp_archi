@@ -1,3 +1,4 @@
+<!-- FILE: questionnaire-app/src/components/QuestionnaireForm.vue -->
 <template>
   <div>
     <h3>{{ selected ? 'Modifier' : 'Ajouter' }} un Questionnaire</h3>
@@ -30,8 +31,8 @@ export default {
     submitForm() {
       if (this.name.trim() === '') return;
       if (this.selected) {
-        // Modification du questionnaire existant
-        fetch(`http://127.0.0.1:5000/questionnaires/${this.selected.id}`, {
+        // Modification d'un questionnaire existant
+        fetch(`/api/questionnaires/${this.selected.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: this.name })
@@ -43,7 +44,7 @@ export default {
           .catch(err => console.error(err));
       } else {
         // Création d'un nouveau questionnaire
-        fetch('http://127.0.0.1:5000/questionnaires', {
+        fetch('/api/questionnaires', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: this.name })

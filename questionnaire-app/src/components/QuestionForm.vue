@@ -1,3 +1,4 @@
+<!-- FILE: questionnaire-app/src/components/QuestionForm.vue -->
 <template>
   <div>
     <h4>Ajouter une Question Ouverte</h4>
@@ -36,14 +37,13 @@ export default {
         question_type: 'open',
         expected_answer: this.expected_answer
       };
-      fetch(`http://127.0.0.1:5000/questionnaires/${this.questionnaire.id}/questions`, {
+      fetch(`/api/questionnaires/${this.questionnaire.id}/questions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(question)
       })
         .then(() => {
           this.$emit('refresh');
-          // Réinitialiser le formulaire
           this.title = '';
           this.ordre = 1;
           this.expected_answer = '';

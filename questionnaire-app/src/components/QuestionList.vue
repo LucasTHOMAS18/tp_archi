@@ -1,55 +1,74 @@
 <template>
-  <div>
-    <h4>Liste des Questions</h4>
-    <ul>
-      <li v-for="question in questions" :key="question.id">
-        {{ question.ordre }}. {{ question.title }} ({{ question.question_type }})
-        <button @click="deleteQuestion(question.id)">Supprimer</button>
+  <div class="question-list">
+    <h3>Liste des Questions</h3>
+    <div v-if="questions.length === 0" class="no-questions">
+      Aucune question dans ce questionnaire.
+    </div>
+    <ul v-else class="questions">
+      <li v-for="question in sortedQuestions" :key="question.id" class="question-item">
+        <div class="question-content" @click="$emit('select-question', question)">
+          <span class="order">{{ question.ordre }}.</span>
+          <span class="title">{{ question.title }}</span>
+          <span class="type">
+            {{ question.question_type === 'open' ? '(Question Ouverte)' : '(QCM)' }}
+          </span>
+        </div>
+        <button @click.stop="$emit('delete-question', question.id)" class="delete-btn">
+          Supprimer
+        </button>
       </li>
     </ul>
-    <!-- Formulaire pour ajouter une nouvelle question -->
-    <QuestionForm :questionnaire="questionnaire" @refresh="fetchQuestions" />
+    <button @click="$emit('add-question')" class="add-btn">
+      Ajouter une question
+    </button>
   </div>
 </template>
 
 <script>
-import QuestionForm from './QuestionForm.vue'
-
 export default {
   name: 'QuestionList',
-  components: { QuestionForm },
   props: {
-    questionnaire: {
-      type: Object,
+    questions: {
+      type: Array,
       required: true
     }
   },
-  data() {
-    return {
-      questions: []
-    }
-  },
-  mounted() {
-    this.fetchQuestions();
-  },
-  methods: {
-    fetchQuestions() {
-      fetch(`http://127.0.0.1:5000/questionnaires/${this.questionnaire.id}/questions`)
-        .then(res => res.json())
-        .then(data => {
-          this.questions = data;
-        })
-        .catch(err => console.error(err));
-    },
-    deleteQuestion(id) {
-      if (confirm('Supprimer cette question ?')) {
-        fetch(`http://127.0.0.1:5000/questions/${id}`, {
-          method: 'DELETE'
-        })
-          .then(() => this.fetchQuestions())
-          .catch(err => console.error(err));
-      }
+  computed: {
+    sortedQuestions() {
+      return [...this.questions].sort((a, b) => a.ordre - b.ordre)
     }
   }
 }
 </script>
+
+<style scoped>
+.question-list {
+  margin: 20px 0;
+}
+.no-questions {
+  color: #777;
+  font-style: italic;
+  margin: 10px 0;
+}
+.questions {
+  list-style: none;
+  padding: 0;
+}
+.question-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+.question-item:hover {
+  background-color: #f7f7f7;
+}
+.delete-btn {
+  background-color: #e76f51;
+}
+.add-btn {
+  background-color: var(--secondary);
+  margin-top: 10px;
+}
+</style>

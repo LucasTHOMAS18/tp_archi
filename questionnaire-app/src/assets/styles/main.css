@@ -1,0 +1,52 @@
+:root {
+    --primary: #2a9d8f;
+    --secondary: #e9c46a;
+    --accent: #f4a261;
+    --background: #f0f0f0;
+    --text: #264653;
+  }
+  
+  body {
+    background-color: var(--background);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+  }
+  
+  a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: var(--accent);
+  }
+  
+  input,
+  textarea {
+    padding: 8px;
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+  }
+  
+  .container {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
