@@ -11,6 +11,7 @@ def mkpath(p):
     return os.path.normpath(os.path.join(os.path.dirname(__file__), p))
 
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + mkpath('../quiz.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
