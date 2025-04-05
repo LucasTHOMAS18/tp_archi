@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 # 🧠 Gestionnaire de QCM — REST API + Vue.js  
 **Lucas THOMAS** · **Yasin KESKIN**
 
@@ -63,11 +60,3 @@
 
 > ℹ️ L’interface sera accessible sur `http://localhost:5173`  
 > Les appels API sont automatiquement proxifiés vers `http://localhost:5000/api/v1`
->>>>>>> Stashed changes
-=======
-```bash
-flask db init
-flask db migrate
-flask db upgrade
-```
->>>>>>> 6bd262f8e4cc56230cc8a23b00c9851ed49d6fce
