@@ -1,14 +1,21 @@
 <template>
   <div>
-    <h2>Questionnaires</h2>
+    <h2>Ajouter un questionnaire</h2>
     <div>
-      <input v-model="newName" placeholder="Nom du questionnaire" />
-      <button @click="addQuiz">Ajouter</button>
+      <div class="actions">
+        <input v-model="newName" placeholder="Nom du questionnaire" />
+        <button class="add no-flex-grow" @click="addQuiz"><span class="material-symbols-rounded ">add</span> Ajouter</button>
+      </div>
     </div>
-    <ul>
+    <h2>Liste des questionnaires</h2>
+    <ul id="quizzes">
       <li v-for="quiz in quizzes" :key="quiz.id">
-        <router-link :to="`/quiz/${quiz.id}`">{{ quiz.name }}</router-link>
-        <button @click="removeQuiz(quiz.id)">Supprimer</button>
+        <h3>{{ quiz.name }}</h3>
+
+        <div class="actions">
+          <router-link class="button edit" :to="`/quiz/${quiz.id}`"><span class="material-symbols-rounded ">edit</span>Modifier</router-link>
+          <button class="delete" @click="removeQuiz(quiz.id)"><span class="material-symbols-rounded ">delete</span>Supprimer</button>
+        </div>
       </li>
     </ul>
   </div>
@@ -39,3 +46,16 @@ async function removeQuiz(id) {
 
 onMounted(fetchData);
 </script>
+
+<style>
+#quizzes {
+  width: 100%;
+  padding: 0px;
+}
+
+#quizzes li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>

@@ -9,17 +9,17 @@ async function request(path, options = {}) {
 }
 
 export default {
-  getQuestionnaires: () => request('/questionnaires'),
-  createQuestionnaire: (data) => request('/questionnaires', {
+  getQuestionnaires: () => request('/quizzes'),
+  createQuestionnaire: (data) => request('/quizzes', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
   }),
-  updateQuestionnaire: (id, data) => request(`/questionnaires/${id}`, {
+  updateQuestionnaire: (id, data) => request(`/quizzes/${id}`, {
     method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
   }),
-  deleteQuestionnaire: (id) => request(`/questionnaires/${id}`, { method: 'DELETE' }),
+  deleteQuestionnaire: (id) => request(`/quizzes/${id}`, { method: 'DELETE' }),
 
-  getQuestions: (quizId) => request(`/questionnaires/${quizId}/questions`),
-  createQuestion: (quizId, data) => request(`/questionnaires/${quizId}/questions`, {
+  getQuestions: (quizId) => request(`/quizzes/${quizId}/questions`),
+  createQuestion: (quizId, data) => request(`/quizzes/${quizId}/questions`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
   }),
   updateQuestion: (id, data) => request(`/questions/${id}`, {

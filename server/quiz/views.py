@@ -2,7 +2,7 @@ from flask import abort, jsonify, make_response, request
 from flask_restful import Api, Resource
 
 from .app import app, db
-from .models import (Choice, MCQuestion, OpenQuestion, Question, Questionnaire,
+from .models import (Choice, MCQuestion, OpenQuestion, Question, Quiz,
                      valid_data)
 
 api = Api(app, prefix="/api/v1")
@@ -10,19 +10,19 @@ api = Api(app, prefix="/api/v1")
 
 class HomeResource(Resource):
     def get(self):
-        questionnaires = Questionnaire.query.all()
-        return [q.to_json() for q in questionnaires], 200
+        quizzes = Quiz.query.all()
+        return [q.to_json() for q in quizzes], 200
 
     def post(self):
-        questionnaires = valid_data(request)
+        quizzes = valid_data(request)
         quizes = []
-        for quiz in questionnaires:
+        for quiz in quizzes:
             if 'name' not in quiz:
                 abort(400)
 
-            new_questionnaire = Questionnaire(name=quiz['name'])
-            quizes.append(new_questionnaire)
-            db.session.add(new_questionnaire)
+            new_quiz = Quiz(name=quiz['name'])
+            quizes.append(new_quiz)
+            db.session.add(new_quiz)
             db.session.commit()
 
             if 'questions' in quiz:
@@ -36,14 +36,14 @@ class HomeResource(Resource):
                         new_question = OpenQuestion(
                             title=question_data['title'],
                             order=question_data.get('order', 1),
-                            questionnaire_id=new_questionnaire.id,
+                            quiz_id=new_quiz.id,
                             expected_answer=question_data.get('expected_answer')
                         )
                     elif question_type == 'mcq':
                         new_question = MCQuestion(
                             title=question_data['title'],
                             order=question_data.get('order', 1),
-                            questionnaire_id=new_questionnaire.id
+                            quiz_id=new_quiz.id
                         )
                         db.session.add(new_question)
                         db.session.commit()
@@ -63,50 +63,50 @@ class HomeResource(Resource):
         return [q.to_json() for q in quizes], 201
 
 
-class QuestionnaireListResource(Resource):
+class QuizListResource(Resource):
     def get(self):
-        questionnaires = Questionnaire.query.all()
-        return [q.to_json() for q in questionnaires], 200
+        quizzes = Quiz.query.all()
+        return [q.to_json() for q in quizzes], 200
 
     def post(self):
         data = request.get_json()
         if 'name' not in data:
             abort(400)
 
-        new_questionnaire = Questionnaire(name=data['name'])
-        db.session.add(new_questionnaire)
+        new_quiz = Quiz(name=data['name'])
+        db.session.add(new_quiz)
         db.session.commit()
-        return new_questionnaire.to_json(), 201
+        return new_quiz.to_json(), 201
 
 
-class QuestionnaireResource(Resource):
+class QuizResource(Resource):
     def get(self, id):
-        questionnaire = Questionnaire.query.get(id)
-        questions = Question.query.filter_by(questionnaire_id=id)
-        if questionnaire is None or questions is None:
+        quiz = Quiz.query.get(id)
+        questions = Question.query.filter_by(quiz_id=id)
+        if quiz is None or questions is None:
             abort(404)
-        return [questionnaire.to_json(), [q.to_json() for q in questions]], 200
+        return [quiz.to_json(), [q.to_json() for q in questions]], 200
 
     def put(self, id):
-        questionnaire = Questionnaire.query.get(id)
-        if questionnaire is None:
+        quiz = Quiz.query.get(id)
+        if quiz is None:
             abort(404)
 
         data = request.get_json()
         if 'name' in data:
-            questionnaire.name = data['name']
+            quiz.name = data['name']
 
         db.session.commit()
-        return {'message': 'Questionnaire modifié'}, 200
+        return {'message': 'Quiz modifié'}, 200
 
     def delete(self, id):
-        questionnaire = Questionnaire.query.get(id)
-        if questionnaire is None:
+        quiz = Quiz.query.get(id)
+        if quiz is None:
             abort(404)
 
-        db.session.delete(questionnaire)
+        db.session.delete(quiz)
         db.session.commit()
-        return {'message': 'Questionnaire supprimée'}, 200
+        return {'message': 'Quiz supprimée'}, 200
 
 
 class QuestionListResource(Resource):
@@ -159,37 +159,44 @@ class QuestionResource(Resource):
         return {'message': 'Question supprimée'}, 200
 
 
-class QuestionnaireQuestionsResource(Resource):
-    def get(self, questionnaire_id):
-        questionnaire = Questionnaire.query.get(questionnaire_id)
-        if questionnaire is None:
+class QuizQuestionsResource(Resource):
+    def get(self, quiz_id):
+        quiz = Quiz.query.get(quiz_id)
+        if quiz is None:
             abort(404)
-        questions = questionnaire.questions.all()
+        questions = quiz.questions.all()
         return [q.to_json() for q in questions], 200
 
-    def post(self, questionnaire_id):
-        questionnaire = Questionnaire.query.get(questionnaire_id)
-        if questionnaire is None:
+    def post(self, quiz_id):
+        quiz = Quiz.query.get(quiz_id)
+        if quiz is None:
             abort(404)
 
         data = request.get_json()
         if not data or 'title' not in data:
             abort(400)
+        
+        same_type = Question.query.filter_by(
+            quiz_id=quiz_id,
+            question_type=data.get('question_type')
+        ).all()
+        max_order = max([q.order for q in same_type], default=0)
+        order = max_order + 1
 
         question_type = data.get('question_type', 'open')
 
         if question_type == 'open':
             new_question = OpenQuestion(
                 title=data['title'],
-                order=data.get('order', 1),
-                questionnaire_id=questionnaire_id,
+                order=order,
+                quiz_id=quiz_id,
                 expected_answer=data.get('expected_answer')
             )
         elif question_type == 'mcq':
             new_question = MCQuestion(
                 title=data['title'],
-                order=data.get('order', 1),
-                questionnaire_id=questionnaire_id
+                order=order,
+                quiz_id=quiz_id
             )
             db.session.add(new_question)
             db.session.commit()
@@ -257,9 +264,9 @@ class ChoiceResource(Resource):
 
 
 api.add_resource(HomeResource, '/')
-api.add_resource(QuestionnaireListResource, '/questionnaires')
-api.add_resource(QuestionnaireResource, '/questionnaires/<int:id>')
-api.add_resource(QuestionnaireQuestionsResource, '/questionnaires/<int:questionnaire_id>/questions')
+api.add_resource(QuizListResource, '/quizzes')
+api.add_resource(QuizResource, '/quizzes/<int:id>')
+api.add_resource(QuizQuestionsResource, '/quizzes/<int:quiz_id>/questions')
 api.add_resource(QuestionListResource, '/questions')
 api.add_resource(QuestionResource, '/questions/<int:id>')
 api.add_resource(ChoiceListResource, '/questions/<int:question_id>/choices')
