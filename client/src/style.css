@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    font-family: 'Roboto';
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+#app {
+    width: 50%;
+}
+
+button,
+input,
+.button,
+textarea {
+    border: none;
+    padding: 10px;
+    border-radius: 100px;
+    transition: .1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 14px;
+    flex-grow: 1;
+    min-height: 44px;
+    min-width: 100px;
+}
+
+a, input {
+    min-height: 22px !important;
+}
+
+input {
+    min-width: 0px !important;
+}
+
+button, .button {
+    background-color: #f0f0f0;;
+}
+
+a:visited {
+    color: black;
+}
+
+input,
+textarea {
+    border: rgb(238, 238, 238) 2px solid;
+    height: 22px;
+}
+
+button:hover,
+.button:hover {
+    cursor: pointer;
+    filter: brightness(.95);
+}
+
+.delete {
+    background-color: rgb(224, 61, 61);
+    color: white;
+}
+
+.add {
+    background-color: rgb(56, 182, 255);
+    color: white;
+}
+
+.edit {
+    background-color: rgb(56, 182, 255);
+    color: white;
+}
+
+.delete:visited, .edit:visited, .add:visited {
+    color: white; 
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.no-flex-grow {
+    flex-grow: 0 !important;
+}
+
+.editor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-actions * {
+    flex-grow: 0 !important;
+}

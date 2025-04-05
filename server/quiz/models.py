@@ -1,7 +1,7 @@
 from .app import db
 
 
-class Questionnaire(db.Model):
+class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
 
@@ -9,7 +9,7 @@ class Questionnaire(db.Model):
         self.name = name
     
     def __repr__(self):
-        return f"<Questionnaire ({self.id}) {self.name}>"
+        return f"<Quiz ({self.id}) {self.name}>"
 
     def to_json(self):
         return {
@@ -21,22 +21,22 @@ class Questionnaire(db.Model):
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
-    ordre = db.Column(db.Integer)
+    order = db.Column(db.Integer)
     question_type = db.Column(db.String(20))  # 'open' ou 'mcq'
-    questionnaire_id = db.Column(
-        db.Integer, db.ForeignKey("questionnaire.id")) 
-    questionnaire = db.relationship(
-        "Questionnaire", backref=db.backref("questions", lazy="dynamic"))
+    quiz_id = db.Column(
+        db.Integer, db.ForeignKey("quiz.id")) 
+    quiz = db.relationship(
+        "Quiz", backref=db.backref("questions", lazy="dynamic"))
     
     __mapper_args__ = {
         'polymorphic_on': question_type,
         'polymorphic_identity': 'base'
     }
 
-    def __init__(self, title, ordre, questionnaire_id):
+    def __init__(self, title, order, quiz_id):
         self.title = title
-        self.ordre = ordre
-        self.questionnaire_id = questionnaire_id
+        self.order = order
+        self.quiz_id = quiz_id
     
     def __repr__(self):
         return f"<Question ({self.id}) {self.title}>"
@@ -45,8 +45,8 @@ class Question(db.Model):
         return {
             "id": self.id,
             "title": self.title,
-            "ordre": self.ordre,
-            "questionnaire_id": self.questionnaire_id,
+            "order": self.order,
+            "quiz_id": self.quiz_id,
             "question_type": self.question_type
         }
 
@@ -59,8 +59,8 @@ class OpenQuestion(Question):
         'polymorphic_identity': 'open'
     }
     
-    def __init__(self, title, ordre, questionnaire_id, expected_answer=None):
-        super().__init__(title, ordre, questionnaire_id)
+    def __init__(self, title, order, quiz_id, expected_answer=None):
+        super().__init__(title, order, quiz_id)
         self.expected_answer = expected_answer
         
     def to_json(self):
@@ -78,8 +78,8 @@ class MCQuestion(Question):
         'polymorphic_identity': 'mcq'
     }
     
-    def __init__(self, title, ordre, questionnaire_id):
-        super().__init__(title, ordre, questionnaire_id)
+    def __init__(self, title, order, quiz_id):
+        super().__init__(title, order, quiz_id)
         
     def to_json(self):
         json_data = super().to_json()
@@ -112,5 +112,5 @@ class Choice(db.Model):
 def valid_data(request):
     data = get_data_from_file(request)
     
-    if 'questionnaires' in data:
-        return data['questionnaires']
+    if 'quizs' in data:
+        return data['quizs']
