@@ -13,7 +13,7 @@
 
       <h2>Questions</h2>
       <ul>
-        <li class="question" v-for="q in questions" :key="q.id">
+        <li style="margin-bottom: 10px;" class="question" v-for="q in questions" :key="q.id">
           {{ q.order }} - {{ q.title }} ({{ q.question_type }})
 
           <div class="actions">
@@ -24,16 +24,29 @@
       </ul>
 
       <div>
-        <p>Ajouter une question :</p>
-        <div class="actions">
-          <button :class="{ edit: questionType === 'open' }" @click="questionType = 'open'; selectedQuestion = null">Question ouverte</button>
-          <button :class="{ edit: questionType === 'mcq' }" @click="questionType = 'mcq'; selectedQuestion = null">QCM</button>
+        <h2>Ajouter une question :</h2>
+        <div class="question-type-list">
+          <div class="question-type-container" @click="questionType = 'open', selectedQuestion = null">
+            <div class="question-type open">
+              <span class="material-symbols-rounded ">question_mark</span>
+            </div>
+
+            <p>Question ouverte</p>
+          </div>
+
+          <div class="question-type-container" @click="questionType = 'mcq', selectedQuestion = null">
+            <div class="question-type mcq">
+              <span class="material-symbols-rounded ">select_check_box</span>
+            </div>
+
+            <p>QCM</p>
+          </div>
         </div>
       </div>
 
-      <OpenQuestionForm v-if="questionType === 'open'" :question="selectedQuestion" @submit="submitQuestion" />
+      <OpenQuestionForm v-if="questionType === 'open'" :question="selectedQuestion" @submit="submitQuestion" @cancel="questionType=null"/>
 
-      <McqQuestionForm v-if="questionType === 'mcq'" :question="selectedQuestion" @submit="submitQuestion" />
+      <McqQuestionForm v-if="questionType === 'mcq'" :question="selectedQuestion" @submit="submitQuestion" @cancel="questionType=null"/>
     </div>
   </div>
 </template>
@@ -93,5 +106,47 @@ watch(() => route.params.id, loadQuiz);
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.selected {
+  border: rgb(56, 182, 255) solid 2px;
+}
+
+.question-type-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.question-type {
+  flex-grow: 0;
+  width: 75px;
+  aspect-ratio: 1/1;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: -10px;
+}
+
+.question-type span {
+  font-size: 40px;
+}
+
+.open {
+  background-color: #ff6105;  
+  color: white;
+}
+
+.mcq {
+  background-color: #0ba84a;
+  color: white;
+}
+
+.question-type-list {
+  display: flex;
+  gap: 50px;
 }
 </style>

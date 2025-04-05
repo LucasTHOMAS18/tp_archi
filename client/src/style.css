@@ -20,7 +20,7 @@ input,
 textarea {
     border: none;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 100px;
     transition: .1s;
     display: flex;
     align-items: center;
@@ -28,7 +28,20 @@ textarea {
     text-decoration: none;
     font-size: 14px;
     flex-grow: 1;
-    background-color: #f0f0f0;
+    min-height: 44px;
+    min-width: 100px;
+}
+
+a, input {
+    min-height: 22px !important;
+}
+
+input {
+    min-width: 0px !important;
+}
+
+button, .button {
+    background-color: #f0f0f0;;
 }
 
 a:visited {
@@ -37,7 +50,7 @@ a:visited {
 
 input,
 textarea {
-    background-color: rgb(238, 238, 238);
+    border: rgb(238, 238, 238) 2px solid;
     height: 22px;
 }
 
@@ -62,6 +75,10 @@ button:hover,
     color: white;
 }
 
+.delete:visited, .edit:visited, .add:visited {
+    color: white; 
+}
+
 .actions {
     display: flex;
     justify-content: space-between;
@@ -78,4 +95,15 @@ button:hover,
     flex-direction: column;
     justify-content: center;
     gap: 10px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-actions * {
+    flex-grow: 0 !important;
 }

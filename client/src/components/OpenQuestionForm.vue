@@ -3,7 +3,11 @@
     <h3>Nouvelle question ouverte</h3>
     <input v-model="title" placeholder="Intitulé" required />
     <textarea v-model="expectedAnswer" placeholder="Réponse attendue"></textarea>
-    <button class="edit" @click="save">Enregistrer</button>
+
+    <div class="form-actions">
+      <button class="delete" @click="emits('cancel')">Annuler</button>
+      <button class="edit" @click="save">Enregistrer</button>
+    </div>
   </div>
 </template>
 
@@ -12,7 +16,7 @@ import { ref, watchEffect } from 'vue';
 import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({ question: Object });
-const emits = defineEmits(['submit']);
+const emits = defineEmits(['submit', 'cancel']);
 
 const title = ref('');
 const expectedAnswer = ref('');

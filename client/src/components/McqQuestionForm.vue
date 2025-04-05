@@ -12,7 +12,11 @@
     </div>
 
     <button @click="addChoice">Ajouter une option</button>
-    <button class="edit" @click="save">Enregistrer</button>
+    
+    <div class="form-actions">
+      <button class="delete" @click="emits('cancel')">Annuler</button>
+      <button class="edit" @click="save">Enregistrer</button>
+    </div>
   </div>
 </template>
 
@@ -21,7 +25,7 @@ import { ref, watchEffect } from 'vue';
 import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({ question: Object });
-const emits = defineEmits(['submit']);
+const emits = defineEmits(['submit', 'cancel']);
 
 const title = ref('');
 const choices = ref([
