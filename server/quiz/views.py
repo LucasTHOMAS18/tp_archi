@@ -176,10 +176,7 @@ class QuizQuestionsResource(Resource):
         if not data or 'title' not in data:
             abort(400)
         
-        same_type = Question.query.filter_by(
-            quiz_id=quiz_id,
-            question_type=data.get('question_type')
-        ).all()
+        same_type = Question.query.filter_by(quiz_id=quiz_id).all()
         max_order = max([q.order for q in same_type], default=0)
         order = max_order + 1
 
