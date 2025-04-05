@@ -35,14 +35,14 @@ class HomeResource(Resource):
                     if question_type == 'open':
                         new_question = OpenQuestion(
                             title=question_data['title'],
-                            ordre=question_data.get('ordre', 1),
+                            order=question_data.get('order', 1),
                             questionnaire_id=new_questionnaire.id,
                             expected_answer=question_data.get('expected_answer')
                         )
                     elif question_type == 'mcq':
                         new_question = MCQuestion(
                             title=question_data['title'],
-                            ordre=question_data.get('ordre', 1),
+                            order=question_data.get('order', 1),
                             questionnaire_id=new_questionnaire.id
                         )
                         db.session.add(new_question)
@@ -132,8 +132,8 @@ class QuestionResource(Resource):
         data = request.get_json()
         if 'title' in data:
             question.title = data['title']
-        if 'ordre' in data:
-            question.ordre = data['ordre']
+        if 'order' in data:
+            question.order = data['order']
         if question.question_type == 'open' and 'expected_answer' in data:
             question.expected_answer = data['expected_answer']
         elif question.question_type == 'mcq' and 'choices' in data:
@@ -181,14 +181,14 @@ class QuestionnaireQuestionsResource(Resource):
         if question_type == 'open':
             new_question = OpenQuestion(
                 title=data['title'],
-                ordre=data.get('ordre', 1),
+                order=data.get('order', 1),
                 questionnaire_id=questionnaire_id,
                 expected_answer=data.get('expected_answer')
             )
         elif question_type == 'mcq':
             new_question = MCQuestion(
                 title=data['title'],
-                ordre=data.get('ordre', 1),
+                order=data.get('order', 1),
                 questionnaire_id=questionnaire_id
             )
             db.session.add(new_question)
